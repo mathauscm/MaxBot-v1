@@ -170,8 +170,7 @@ Este projeto está sob a licença ISC - veja o arquivo [LICENSE](LICENSE) para d
 * Comunidade Node.js e WhatsApp-web.js
 
 ---
-<<<<<<< HEAD
+
 Desenvolvido com ❤️ por Mathaus Carvalho
-=======
-Desenvolvido com ❤️ por Mathaus Carvalho
->>>>>>> 71cd1dea6bf11078968ebe191f0257cbcf7df030
+
+
