@@ -285,6 +285,6 @@ Desenvolvido por Mathaus Carvalho
 
 ---
 
-*"Jesus é o caminho, a verdade e vida."*✝️
+*"Jesus é o caminho, a verdade e a vida."*✝️
 
 
