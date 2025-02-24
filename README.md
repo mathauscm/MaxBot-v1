@@ -1,7 +1,14 @@
 # MaxBot 🤖 
 # Chatbot Inteligente para WhatsApp com ML e NLP
 
+[![Versão](https://img.shields.io/badge/versão-1.0.0-blue.svg)](https://github.com/mathauscm/MaxBot-v1)
+[![Status](https://img.shields.io/badge/status-em%20desenvolvimento-green.svg)](https://github.com/mathauscm/MaxBot-v1)
+[![Node.js](https://img.shields.io/badge/Node.js-v18.20.5-brightgreen.svg)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/licença-ISC-orange.svg)](LICENSE)
+
 MaxBot é um chatbot avançado para WhatsApp que utiliza Machine Learning e Processamento de Linguagem Natural para fornecer respostas contextuais inteligentes. Integrado com OpenAI e Google Maps, o bot oferece desde respostas a perguntas gerais até recomendações precisas de locais.
+
+![MaxBot Demo](https://via.placeholder.com/800x400?text=MaxBot+Demo+Screenshot)
 
 ## ✨ Características Principais
 
@@ -32,12 +39,27 @@ MaxBot é um chatbot avançado para WhatsApp que utiliza Machine Learning e Proc
 
 ### Pré-requisitos
 
-- Node.js (v18.20.5)
-- Google Chrome instalado
-- Conta no WhatsApp
-- Chaves de API:
-  - OpenAI API Key
-  - Google Maps API Key
+| Requisito | Versão | Link |
+|-----------|--------|------|
+| Node.js | v18.20.5 ou superior | [Download](https://nodejs.org/) |
+| Google Chrome | Versão mais recente | [Download](https://www.google.com/chrome/) |
+| Conta no WhatsApp | Ativa e verificada | [WhatsApp Web](https://web.whatsapp.com/) |
+| OpenAI API Key | - | [Obter chave](https://platform.openai.com/account/api-keys) |
+| Google Maps API Key | Com Places API ativada | [Console Google](https://console.cloud.google.com/) |
+
+#### Obtendo as chaves de API:
+
+**OpenAI API Key:**
+1. Crie uma conta no [OpenAI Platform](https://platform.openai.com/)
+2. Navegue para "API Keys"
+3. Clique em "Create new secret key"
+4. Copie e salve a chave (ela só é mostrada uma vez)
+
+**Google Maps API Key:**
+1. Crie ou acesse seu projeto no [Google Cloud Console](https://console.cloud.google.com/)
+2. Ative a "Places API" e "Maps JavaScript API"
+3. Crie credenciais para obter a chave da API
+4. Configure as restrições de uso se necessário
 
 ### Instalação 🔧
 
@@ -57,6 +79,7 @@ npm install
 OPENAI_API_KEY=sua_chave_openai
 GOOGLE_MAPS_API_KEY=sua_chave_google_maps
 PORT=4000
+CHAT_PORT=5000
 ```
 
 4. Inicie o bot: ▶️
@@ -68,6 +91,14 @@ npm start
 ```
 http://localhost:3000
 ```
+
+## 📱 Interface Web
+
+O MaxBot inclui uma interface web simples para interações diretas sem necessidade do WhatsApp:
+
+![Interface Web](https://via.placeholder.com/800x400?text=MaxBot+Web+Interface)
+
+Acesse a interface web em: `http://localhost:5000`
 
 ## 📁 Estrutura do Projeto
 
@@ -134,9 +165,19 @@ Bot: "Encontrei estas opções para você:
 Usuário: "@MaxBot explique o que é machine learning"
 Bot: [Resposta detalhada da OpenAI sobre machine learning]
 ```
+
+### Casos de Uso Avançados
+
+| Cenário | Exemplo de Comando | Resultado |
+|---------|-------------------|-----------|
+| Recomendação de restaurante com filtro | "@MaxBot restaurante italiano com ambiente familiar" | Lista filtrada por tipo de comida e ambiente |
+| Análise de dados em grupo | "@MaxBot faça um resumo da nossa conversa sobre o projeto X" | Resumo contextual baseado no histórico |
+| Planejamento de evento | "@MaxBot ajude a organizar um workshop para 15 pessoas" | Sugestões estruturadas para planejamento |
+| Pesquisa educacional | "@MaxBot explique o ciclo da água para crianças" | Explicação adaptada ao público-alvo |
+
 # API REST
 
-Além do bot WhatsApp, o MaxBot também fornece uma API REST para processamento de conversas e classificação de mensagens.
+Além do bot WhatsApp, o MaxBot também fornece uma API REST para processamento de conversas e classificação de mensagens. A documentação interativa completa está disponível através do Swagger UI.
 
 ## Endpoints
 
@@ -207,6 +248,34 @@ POST /api/classificar_mensagem
 }
 ```
 
+### Documentação Swagger
+
+A API inclui uma documentação interativa Swagger que permite testar os endpoints diretamente pelo navegador:
+
+```
+http://localhost:3001/api-docs
+```
+
+![Swagger UI](https://via.placeholder.com/800x400?text=Swagger+UI+Screenshot)
+
+A documentação Swagger oferece:
+- Descrição detalhada de todos os endpoints
+- Interface interativa para testar as chamadas
+- Exemplos de requisições e respostas
+- Modelos de schema para cada operação
+
+### Exemplos via Linha de Comando
+
+```bash
+# Exemplo com curl
+curl -X POST http://localhost:3001/api/classificar_mensagem \
+  -H "Content-Type: application/json" \
+  -d '{"mensagem": "Onde fica um bom restaurante para almoçar?"}'
+
+# Exemplo PowerShell
+Invoke-RestMethod -Uri "http://localhost:3001/api/classificar_mensagem" -Method Post -ContentType "application/json" -Body '{"mensagem": "Meu carro está fazendo um barulho estranho."}'
+```
+
 ## Hierarquia de Prioridades
 
 As mensagens são classificadas seguindo a hierarquia:
@@ -217,31 +286,17 @@ As mensagens são classificadas seguindo a hierarquia:
 
 Se uma mensagem contiver elementos de múltiplas categorias, a de maior prioridade será escolhida.
 
-## Exemplos de Uso
-
-### Exemplo com curl
-
-```bash
-curl -X POST http://localhost:3000/api/classificar_mensagem \
-  -H "Content-Type: application/json" \
-  -d '{"mensagem": "Onde fica um bom restaurante para almoçar?"}'
-```
-# Exemplo PowerShell
-```bash
-Invoke-RestMethod -Uri "http://localhost:3001/api/classificar_mensagem" -Method Post -ContentType "application/json" -Body '{"mensagem": "Meu carro está fazendo um barulho estranho."}'
-```
-
-
 ## ⚙️ Desenvolvimento
 
 ### Scripts Disponíveis
 
-```bash
-npm start          # Inicia o bot
-npm run dev        # Inicia em modo desenvolvimento
-npm test           # Executa os testes
-node api-server.js # Inicia bot API rest
-```
+| Comando | Descrição |
+|---------|-----------|
+| `npm start` | Inicia o bot principal |
+| `npm run dev` | Inicia em modo desenvolvimento com hot-reload |
+| `npm test` | Executa os testes automatizados |
+| `node api-server.js` | Inicia apenas a API REST |
+| `node chat-server.js` | Inicia apenas a interface web |
 
 ### Testes
 O projeto inclui testes unitários para o API e classificador ML usando Chai e Mocha:
@@ -249,6 +304,12 @@ O projeto inclui testes unitários para o API e classificador ML usando Chai e M
 npm test
 ```
 
+#### Cobertura de Testes
+- **Classificador ML**: Testes para as quatro categorias principais
+- **API REST**: Testes para os endpoints principais
+- **Integrações**: Testes para integração com serviços externos
+
+Para adicionar novos testes, siga o padrão existente em `src/test/`.
 
 ## 📈 Machine Learning
 
@@ -257,12 +318,100 @@ npm test
 - Sistema de pontuação ponderada
 - Treinamento com datasets customizados
 
+### Arquitetura do Sistema
+
+```
+                                   ┌─────────────────────┐
+┌─────────────┐                    │     Interfaces      │
+│   Cliente   │◄───────────────────┤  ┌───────────────┐  │
+│  WhatsApp   │                    │  │  WhatsApp Web │  │
+└─────┬───────┘                    │  └───────────────┘  │
+      │                            │  ┌───────────────┐  │
+      │                            │  │  Web Chat UI  │  │
+      │                            │  └───────────────┘  │
+      │                            │  ┌───────────────┐  │
+      ▼                            │  │   REST API    │  │
+┌─────────────────────────────────┐│  └───────────────┘  │
+│           MaxBot Core           ││                     │
+│                                 │└─────────────────────┘
+│  ┌──────────────────────────┐   │
+│  │  Message Handler Service │   │         ┌───────────────┐
+│  │  ┌─────────────────────┐ │   │         │  Persistence  │
+│  │  │ Extract Message     │ │   │         │  ┌─────────┐  │
+│  │  │ Payload             │ │   │         │  │ Message │  │
+│  │  └─────────┬───────────┘ │   │◄────────┤  │ History │  │
+│  │            │             │   │         │  └─────────┘  │
+│  │  ┌─────────▼───────────┐ │   │         │  ┌─────────┐  │
+│  │  │ ML Classifier       │ │   │         │  │Category │  │
+│  │  │ ┌─────────────────┐ │ │   │         │  │Data     │  │
+│  │  │ │Training Datasets│ │ │   │         │  └─────────┘  │
+│  │  │ └─────────────────┘ │ │   │         └───────────────┘
+│  │  └─────────┬───────────┘ │   │
+│  │            │             │   │
+│  │  ┌─────────▼───────────┐ │   │         ┌───────────────┐
+│  │  │ Response Generator  │ │   │         │External APIs  │
+│  │  └─────────┬───────────┘ │   │         │  ┌─────────┐  │
+│  └──────────┬─┴──────────────┘   │◄────────┤  │ OpenAI  │  │
+│             │                    │         │  └─────────┘  │
+│  ┌──────────▼──────────────┐     │         │  ┌─────────┐  │
+│  │  Bot Command Handler    │     │         │  │ Google  │  │
+│  └─────────────────────────┘     │         │  │ Maps    │  │
+│                                 │         │  └─────────┘  │
+└─────────────────────────────────┘         └───────────────┘
+```
+
 ## 🔐 Segurança
 
 - Autenticação segura via QR Code
 - Sessões persistentes com LocalAuth
 - Sanitização de inputs
 - Tratamento de erros robusto
+
+### Boas Práticas
+- Todas as chaves de API são armazenadas em variáveis de ambiente
+- Autenticação do cliente WhatsApp é mantida localmente
+- Dados sensíveis não são expostos em logs
+
+## 🛠️ Troubleshooting
+
+| Problema | Possível Causa | Solução |
+|----------|----------------|---------|
+| QR Code não aparece | Chrome não instalado corretamente | Verificar caminho do Chrome em `systemUtils.js` |
+| Erro de autenticação | Sessão WhatsApp expirada | Limpar diretório `.wwebjs_auth` e reiniciar |
+| Falha na API | Chaves de API incorretas | Verificar formato das chaves no arquivo `.env` |
+| Classificação imprecisa | Dataset de treino limitado | Adicionar mais exemplos em `DadosTreinamento` |
+| Erro na conexão WhatsApp | Problemas com Puppeteer | Verificar versões de dependências compatíveis |
+
+## 🔮 Roadmap
+
+- **Versão 1.1**
+  - Suporte a múltiplos idiomas
+  - Dashboard de análise de conversas
+  - Aprimoramento do classificador ML com feedback de usuários
+
+- **Versão 1.2**
+  - Integração com mais APIs (previsão do tempo, cotações, etc.)
+  - Suporte a mensagens multimídia
+  - Sistema de autenticação para a API REST
+
+- **Versão 2.0**
+  - Interface de administração web completa
+  - Recursos de automação de marketing
+  - Multi-instância para gerenciar vários números
+
+## 🤝 Como Contribuir
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)
+3. Adicione seus commits (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Envie para o branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um Pull Request
+
+### Padrões de Código
+- Siga a formatação existente no projeto
+- Adicione comentários para código complexo
+- Escreva testes para novas funcionalidades
+- Mantenha o README atualizado
 
 ## 📄 Licença
 
@@ -285,6 +434,4 @@ Desenvolvido por Mathaus Carvalho
 
 ---
 
-_"Jesus é o caminho, a verdade e a vida."_✝️
-
-
+*"Jesus é o caminho, a verdade e a vida."* ✝️
