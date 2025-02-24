@@ -2,6 +2,7 @@ const { expect } = require('chai');
 const { MLBasedClassifier } = require('./../services/classifier/classifier');
 const fs = require('fs');
 const path = require('path');
+// const assert = require('assert')
 
 describe('Teste de Classificação', () => {
     let classifier;
@@ -32,6 +33,7 @@ describe('Teste de Classificação', () => {
     it('deve classificar mensagens relacionadas ao trabalho', () => {
         const result = classifier.classificar("Preciso entregar o relatório urgente");
         expect(result.categoria).to.equal('trabalho');
+        // assert.deepStrictEqual(result.categoria, 'trabalho')
     });
 
     it('deve classificar mensagens relacionadas a perguntas gerais', () => {

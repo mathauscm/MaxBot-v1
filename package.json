@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha src/test/classification.test.js"
   },
   "engines": {
     "node": "18.20.5"
@@ -16,13 +16,15 @@
   "description": "",
   "dependencies": {
     "axios": "^1.7.9",
-    "chai": "^5.2.0",
+    "chai": "^4.3.6",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mocha": "^11.1.0",
     "openai": "^4.85.4",
     "puppeteer-core": "^24.2.1",
     "qrcode": "^1.5.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "whatsapp-web.js": "^1.26.0"
   }
 }
