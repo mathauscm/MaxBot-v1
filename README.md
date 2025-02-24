@@ -75,16 +75,21 @@ http://localhost:3000
 src/
 ├── config/
 │   ├── enviroment.js         # Configurações de ambiente
-│   └── whatsappConfig.js     # Configuração do cliente WhatsApp
+│   ├── whatsappConfig.js     # Configuração do cliente WhatsApp
+│   └── swaggerConfig.js      # Configuração do swagger
 ├── controllers/
-│   ├── botController.js      # Controlador principal do bot
-│   ├── classifierData.js     # Manipulação de dados classificados
+│   ├── apiController.js         # Controlador API Rest
+│   ├── botController.js         # Controlador principal do bot
+│   ├── classifierData.js        # Manipulação de dados classificados
 │   └── extractMessagePayload.js # Extração de dados das mensagens
 ├── db/
 │   ├── data/
 │   │   └── general_history.json # Histórico geral de mensagens
 │   └── classificationMensages/
 │       └── classificationByTime.json # Mensagens classificadas
+├── routes/
+│   ├── apiRoutes.js # Definição de rotas API
+│   └── webRoutes.js # Definição rotas app WhatsApp
 ├── services/
 │   ├── classifier/
 │   │   ├── classifier.js     # Classificador ML
@@ -93,7 +98,7 @@ src/
 │   ├── google/
 │   │   └── googleMapsService.js # Integração Google Maps
 │   ├── openai/
-│   │   └── openAiService.js  # Integração OpenAI
+│   │   └── openAiService.js     # Integração OpenAI
 │   └── mentionHandlerService.js # Processador de menções
 ├──test/
 │  ├── api.test.js            # Teste API REST
