@@ -8,7 +8,12 @@
 
 MaxBot é um chatbot avançado para WhatsApp que utiliza Machine Learning e Processamento de Linguagem Natural para fornecer respostas contextuais inteligentes. Integrado com OpenAI e Google Maps, o bot oferece desde respostas a perguntas gerais até recomendações precisas de locais.
 
-![MaxBot Demo](https://via.placeholder.com/800x400?text=MaxBot+Demo+Screenshot)
+## Bot WhatsApp
+![MaxBot Demo](./src/assets/screenshots/3.png)
+
+## Bot navegador web
+![MaxBot Demo](./src/assets/screenshots/4.png)
+
 
 ## ✨ Características Principais
 
@@ -175,7 +180,7 @@ Bot: [Resposta detalhada da OpenAI sobre machine learning]
 | Planejamento de evento | "@MaxBot ajude a organizar um workshop para 15 pessoas" | Sugestões estruturadas para planejamento |
 | Pesquisa educacional | "@MaxBot explique o ciclo da água para crianças" | Explicação adaptada ao público-alvo |
 
-# API REST
+# API 
 
 Além do bot WhatsApp, o MaxBot também fornece uma API REST para processamento de conversas e classificação de mensagens. A documentação interativa completa está disponível através do Swagger UI.
 
@@ -256,7 +261,7 @@ A API inclui uma documentação interativa Swagger que permite testar os endpoin
 http://localhost:3001/api-docs
 ```
 
-![Swagger UI](https://via.placeholder.com/800x400?text=Swagger+UI+Screenshot)
+![Swagger UI](./src/assets/screenshots/5.png)
 
 A documentação Swagger oferece:
 - Descrição detalhada de todos os endpoints
