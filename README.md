@@ -140,7 +140,7 @@ http://localhost:3000
 
 O MaxBot inclui uma interface web simples para interações diretas sem necessidade do WhatsApp:
 
-![Interface Web](https://via.placeholder.com/800x400?text=MaxBot+Web+Interface)
+![Interface Web](./src/assets/screenshots/4.png)
 
 Acesse a interface web em: `http://localhost:5000`
 
