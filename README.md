@@ -83,6 +83,49 @@ PORT=4000
 CHAT_PORT=5000
 ```
 
+## ⚠️ Estrutura de Diretórios Necessária
+
+Devido às configurações do .gitignore, alguns diretórios e arquivos importantes não são incluídos no repositório. Você precisará criar manualmente a seguinte estrutura após clonar o projeto:
+
+```
+src/
+└── db/
+    ├── data/
+    │   └── general_history.json  # Armazena o histórico geral de mensagens
+    └── classificationMensages/
+        └── classificationByTime.json  # Armazena as mensagens classificadas
+```
+
+### Como configurar:
+
+1. Após clonar o repositório, crie os diretórios e arquivos ausentes:
+
+```bash
+# Na raiz do projeto
+mkdir -p src/db/data
+mkdir -p src/db/classificationMensages
+touch src/db/data/general_history.json
+touch src/db/classificationMensages/classificationByTime.json
+```
+
+2. Inicialize os arquivos JSON com estruturas vazias:
+
+**Para general_history.json:**
+```json
+{
+  "messages": []
+}
+```
+
+**Para classificationByTime.json:**
+```json
+{
+  "conversations": []
+}
+```
+
+> **IMPORTANTE**: Estes diretórios e arquivos são essenciais para o funcionamento do bot, pois armazenam o histórico de mensagens e as classificações. O sistema criará automaticamente os dados necessários durante a execução.
+
 4. Inicie o bot: ▶️
 ```bash
 npm start
