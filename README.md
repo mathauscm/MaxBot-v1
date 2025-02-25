@@ -8,10 +8,10 @@
 
 MaxBot é um chatbot avançado para WhatsApp que utiliza Machine Learning e Processamento de Linguagem Natural para fornecer respostas contextuais inteligentes. Integrado com OpenAI e Google Maps, o bot oferece desde respostas a perguntas gerais até recomendações precisas de locais.
 
-## Bot WhatsApp
+## ChatBot WhatsApp
 ![MaxBot Demo](./src/assets/screenshots/3.png)
 
-## Bot navegador web
+## ChatBot AI - navegador web
 ![MaxBot Demo](./src/assets/screenshots/4.png)
 
 
@@ -438,5 +438,7 @@ Este projeto está sob a licença ISC - veja o arquivo [LICENSE](LICENSE) para d
 Desenvolvido por Mathaus Carvalho
 
 ---
+
+
 
 *"Jesus é o caminho, a verdade e a vida."* ✝️

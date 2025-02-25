@@ -1,13 +1,45 @@
+/**
+ * @fileoverview Módulo para carregamento de dados de treinamento e classificação de texto
+ * utilizando aprendizado de máquina.
+ * @module text-classifier
+ * @requires fs
+ * @requires path
+ * @requires ./classifier.js
+ */
+
 const fs = require('fs').promises;
 const path = require('path');
 const { MLBasedClassifier } = require('./classifier.js');
 
+/**
+ * Classe responsável por carregar dados de treinamento de arquivos de texto.
+ * @class
+ */
 class DatasetLoader {
+    /**
+     * Cria uma instância do carregador de datasets.
+     * @constructor
+     */
     constructor() {
+        /**
+         * Diretório base onde estão armazenados os arquivos de treinamento.
+         * @type {string}
+         */
         this.baseDir = path.join(__dirname, 'DadosTreinamento');
+        
+        /**
+         * Categorias disponíveis para classificação.
+         * @type {Array<string>}
+         */
         this.categories = ['trabalho', 'sugestoes_locais', 'perguntas_gerais', 'outros'];
     }
 
+    /**
+     * Carrega os dados de treinamento de todos os arquivos de categorias.
+     * @async
+     * @returns {Promise<Array<Object>>} Array de objetos com texto e categoria correspondente.
+     * @throws {Error} Se ocorrer erro na leitura dos arquivos.
+     */
     async loadTrainingData() {
         const trainingData = [];
 
@@ -37,12 +69,35 @@ class DatasetLoader {
     }
 }
 
+/**
+ * Classe responsável pelo treinamento e uso do classificador de texto.
+ * @class
+ */
 class MLClassifierTrainer {
+    /**
+     * Cria uma instância do treinador de classificador.
+     * @constructor
+     */
     constructor() {
+        /**
+         * Instância do classificador baseado em ML.
+         * @type {MLBasedClassifier}
+         */
         this.classifier = new MLBasedClassifier();
+        
+        /**
+         * Instância do carregador de datasets.
+         * @type {DatasetLoader}
+         */
         this.dataLoader = new DatasetLoader();
     }
 
+    /**
+     * Treina o classificador utilizando os arquivos de dados.
+     * @async
+     * @returns {Promise<MLBasedClassifier>} O classificador treinado.
+     * @throws {Error} Se ocorrer erro durante o treinamento.
+     */
     async trainWithFiles() {
         try {
             // Carrega os dados de treinamento
@@ -63,6 +118,10 @@ class MLClassifierTrainer {
         }
     }
 
+    /**
+     * Executa testes de classificação em exemplos pré-definidos.
+     * @returns {void}
+     */
     runTests() {
         const testCases = [
             "Como lidar com o estresse no trabalho?",
@@ -82,7 +141,13 @@ class MLClassifierTrainer {
         });
     }
 
-    // Método para classificar um novo texto
+    /**
+     * Classifica um novo texto utilizando o classificador treinado.
+     * @param {string} texto - O texto a ser classificado.
+     * @returns {Object} Objeto contendo a categoria prevista e nível de confiança.
+     * @returns {string} resultado.categoria - A categoria prevista.
+     * @returns {number} resultado.confianca - O nível de confiança na classificação (%).
+     */
     classificar(texto) {
         return this.classifier.classificar(texto);
     }

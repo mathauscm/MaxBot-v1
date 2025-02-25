@@ -3,12 +3,47 @@ const path = require('path');
 const { MLClassifierTrainer } = require('./../services/classifier/ml-training.js');
 const { agruparMensagens } = require('../utils/chatUtils');
 
+/**
+ * Classe para gerenciamento de classificação e análise de mensagens
+ * 
+ * Responsável por processar, classificar e armazenar mensagens em categorias
+ * utilizando um classificador de Machine Learning
+ * 
+ * @class
+ */
 class ClassifierData {
+    /**
+     * Construtor da classe ClassifierData
+     * Configura os caminhos de arquivo e inicializa o treinador de ML
+     * 
+     * @constructor
+     */
     constructor() {
+        /** 
+         * Caminho para o arquivo de classificações 
+         * @type {string}
+         * @private
+         */
         this.classificationPath = path.join(__dirname, '../db/classificationMensages/classificationByTime.json');
+        
+        /** 
+         * Instância do treinador de classificação de Machine Learning 
+         * @type {MLClassifierTrainer}
+         * @private
+         */
         this.mlTrainer = new MLClassifierTrainer();
     }
 
+    /**
+     * Inicializa o classificador e prepara o arquivo de classificações
+     * 
+     * - Treina o classificador de Machine Learning
+     * - Cria o diretório de classificações se não existir
+     * - Inicializa o arquivo de classificações com dados padrão
+     * 
+     * @async
+     * @throws {Error} Erro durante a inicialização do classificador
+     */
     async initialize() {
         try {
             // Inicializa o classificador ML
@@ -49,6 +84,14 @@ class ClassifierData {
         }
     }
 
+    /**
+     * Processa uma nova mensagem, classificando-a e salvando seus dados
+     * 
+     * @async
+     * @param {Object} messagePayload - Payload da mensagem a ser processada
+     * @returns {Object} Mensagem com classificação adicionada
+     * @throws {Error} Erro durante o processamento da mensagem
+     */
     async processNewMessage(messagePayload) {
         try {
             // Classifica a mensagem usando o ML
@@ -83,6 +126,12 @@ class ClassifierData {
         }
     }
 
+    /**
+     * Organiza as mensagens por categoria e agrupa por tempo
+     * 
+     * @param {Array} messages - Lista de mensagens para organizar
+     * @returns {Object} Dados organizados com estatísticas e conversas
+     */
     organizeMessages(messages) {
         // Ordena as mensagens por timestamp
         const sortedMessages = messages.sort((a, b) => a.timestamp - b.timestamp);
@@ -130,6 +179,12 @@ class ClassifierData {
         };
     }
 
+    /**
+     * Lê as classificações existentes no arquivo
+     * 
+     * @async
+     * @returns {Array} Lista de mensagens classificadas
+     */
     async readExistingClassifications() {
         try {
             const fileExists = await fs.access(this.classificationPath).then(() => true).catch(() => false);
@@ -164,6 +219,13 @@ class ClassifierData {
         }
     }
 
+    /**
+     * Salva as classificações de mensagens em arquivo
+     * 
+     * @async
+     * @param {Object} data - Dados de classificação para salvar
+     * @throws {Error} Erro durante a gravação do arquivo
+     */
     async saveClassifications(data) {
         try {
             await fs.writeFile(
@@ -178,6 +240,13 @@ class ClassifierData {
         }
     }
 
+    /**
+     * Recupera conversas por categoria específica
+     * 
+     * @async
+     * @param {string} category - Categoria de conversas a recuperar
+     * @returns {Array} Lista de conversas na categoria especificada
+     */
     async getConversationsByCategory(category) {
         try {
             const data = await fs.readFile(this.classificationPath, 'utf8');
@@ -190,4 +259,8 @@ class ClassifierData {
     }
 }
 
+/**
+ * Instância singleton do ClassifierData
+ * @module ClassifierDataModule
+ */
 module.exports = new ClassifierData();

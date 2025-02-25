@@ -1,16 +1,50 @@
+/**
+ * @fileoverview Testes de integração para os endpoints da API.
+ * @module api-integration-tests
+ * @requires chai
+ * @requires axios
+ * @requires express
+ * @requires http
+ * @requires ../routes/apiRoutes
+ */
+
 const { expect } = require('chai');
 const axios = require('axios');
 const express = require('express');
 const http = require('http');
 const apiRoutes = require('../routes/apiRoutes');
 
+/**
+ * URL base para os testes da API.
+ * @constant {string}
+ */
 const API_URL = 'http://localhost:3001/api';
+
+/**
+ * Servidor HTTP para os testes.
+ * @type {http.Server}
+ */
 let server;
 
+/**
+ * Suite de testes principal para os endpoints da API.
+ * Inclui configuração do servidor de teste e verificações de diferentes rotas.
+ * @namespace APITests
+ */
 describe('API Endpoints Tests', function () {
     
+    /**
+     * Aumenta o timeout para 10 segundos para todos os testes nesta suite.
+     * @memberof APITests
+     */
     this.timeout(10000);
 
+    /**
+     * Configura e inicia o servidor Express antes de executar os testes.
+     * @function before
+     * @memberof APITests
+     * @param {Function} done - Callback chamado quando o servidor estiver pronto.
+     */
     before(function (done) {
         const app = express();
         app.use(express.json());
@@ -23,6 +57,12 @@ describe('API Endpoints Tests', function () {
         });
     });
 
+    /**
+     * Encerra o servidor após a execução de todos os testes.
+     * @function after
+     * @memberof APITests
+     * @param {Function} done - Callback chamado quando o servidor for encerrado.
+     */
     after(function (done) {
         if (server) {
             server.close(() => {
@@ -34,8 +74,23 @@ describe('API Endpoints Tests', function () {
         }
     });
 
+    /**
+     * Testes para o endpoint de processamento de conversas.
+     * @namespace ProcessarConversaTests
+     * @memberof APITests
+     */
     describe('POST /processar_conversa', () => {
+        /**
+         * Testa se o endpoint processa corretamente uma conversa e responde a uma pergunta específica.
+         * @function
+         * @memberof APITests.ProcessarConversaTests
+         * @async
+         */
         it('deve processar uma conversa e responder a uma pergunta', async () => {
+            /**
+             * Dados de exemplo para o teste, incluindo uma conversa e uma pergunta.
+             * @type {Object}
+             */
             const data = {
                 "conversa": [
                     {"usuario": "João", "mensagem": "Oi, pessoal! Vamos marcar a reunião?", "hora_envio": "2025-02-18T09:00:00"},
@@ -67,7 +122,18 @@ describe('API Endpoints Tests', function () {
         });
     });
 
+    /**
+     * Testes para o endpoint de classificação de mensagens.
+     * @namespace ClassificarMensagemTests
+     * @memberof APITests
+     */
     describe('POST /classificar_mensagem', () => {
+        /**
+         * Testa a classificação de uma mensagem relacionada a sugestões de locais.
+         * @function
+         * @memberof APITests.ClassificarMensagemTests
+         * @async
+         */
         it('deve classificar uma mensagem sobre locais', async () => {
             const data = {
                 "mensagem": "Onde fica um bom restaurante para almoçar?"
@@ -80,6 +146,12 @@ describe('API Endpoints Tests', function () {
             expect(response.data.categoria).to.equal('sugestoes_locais');
         });
 
+        /**
+         * Testa a classificação de uma mensagem relacionada ao trabalho.
+         * @function
+         * @memberof APITests.ClassificarMensagemTests
+         * @async
+         */
         it('deve classificar uma mensagem sobre trabalho', async () => {
             const data = {
                 "mensagem": "Preciso revisar um relatório urgente para o cliente."
@@ -92,6 +164,12 @@ describe('API Endpoints Tests', function () {
             expect(response.data.categoria).to.equal('trabalho');
         });
 
+        /**
+         * Testa se o classificador prioriza corretamente quando uma mensagem contém múltiplas categorias.
+         * @function
+         * @memberof APITests.ClassificarMensagemTests
+         * @async
+         */
         it('deve priorizar trabalho quando há múltiplas categorias', async () => {
             const data = {
                 "mensagem": "Onde fica um bom restaurante para almoçar? Preciso também revisar um relatório urgente para o cliente."
@@ -104,6 +182,13 @@ describe('API Endpoints Tests', function () {
             expect(response.data.categoria).to.equal('trabalho');
         });
 
+        /**
+         * Testa a classificação de uma mensagem genérica de conhecimento geral.
+         * Este teste possui um timeout aumentado devido à possível complexidade da análise.
+         * @function
+         * @memberof APITests.ClassificarMensagemTests
+         * @async
+         */
         it('deve lidar com mensagens genéricas', async function () {
             // Aumentar o timeout para este teste específico
             this.timeout(5000);  // Aumenta o timeout para 5 segundos

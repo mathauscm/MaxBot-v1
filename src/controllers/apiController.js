@@ -19,21 +19,32 @@ let classifier = null;
 /**
  * Processa uma conversa e responde a uma pergunta baseada no contexto
  * Parte 1 do desafio
+ * 
+ * Esta função analisa uma conversa fornecida e gera uma resposta para uma pergunta específica,
+ * com lógica especial para identificar horários de reunião.
+ * 
+ * @async
+ * @function processarConversa
+ * @param {Object} req - Objeto de requisição Express
+ * @param {Object} res - Objeto de resposta Express
+ * @returns {Object} Resposta JSON com a resposta processada ou mensagem de erro
+ * 
+ * @throws {Error} Erro interno ao processar a conversa
  */
 async function processarConversa(req, res) {
     try {
         const { conversa, pergunta } = req.body;
 
+        // Validação de entrada
         if (!conversa || !Array.isArray(conversa) || conversa.length === 0 || !pergunta) {
             return res.status(400).json({
                 erro: "Formato inválido. É necessário fornecer um array de conversas e uma pergunta."
             });
         }
 
-        // Verificar se há menção direta a horários na conversa
+        // Identificação de horários na conversa
         const horariosNaConversa = conversa
             .map(msg => {
-                // Regex mais robusto para capturar horários 
                 const match = msg.mensagem.match(/(?:(?:às|as)\s*)?(\d{1,2})(?:[:h]\s*)?(?:h(?:oras)?)?/iu);
                 return match ? { 
                     horario: match[1], 
@@ -44,18 +55,12 @@ async function processarConversa(req, res) {
             })
             .filter(item => item !== null);
 
-        // Adicionar log para debug
-        console.log('Horários encontrados:', horariosNaConversa);
-
-        // Se encontramos horários explícitos na conversa
+        // Lógica para horários de reunião
         if (horariosNaConversa.length > 0 && 
             pergunta.toLowerCase().includes('hora') && 
             pergunta.toLowerCase().includes('reuni')) {
             
-            // Ordenar por timestamp para pegar o horário mais recente
             const ultimoHorario = horariosNaConversa.sort((a, b) => b.timestamp - a.timestamp)[0];
-            
-            // Encontrar quem sugeriu primeiro o horário
             const primeiroHorario = horariosNaConversa.sort((a, b) => a.timestamp - b.timestamp)[0];
             
             return res.status(200).json({ 
@@ -63,7 +68,7 @@ async function processarConversa(req, res) {
             });
         }
 
-        // Processamento original se não houver análise direta
+        // Formatação da conversa para processamento
         const conversaFormatada = conversa.map(msg => ({
             message: {
                 body: msg.mensagem,
@@ -75,12 +80,12 @@ async function processarConversa(req, res) {
             timestamp: new Date(msg.hora_envio).getTime() / 1000
         }));
 
-        // Formatar a conversa para um prompt simples
+        // Criação do contexto da conversa
         const contextoConversaSimples = conversa.map(msg => 
             `${msg.usuario}: ${msg.mensagem}`
         ).join('\n');
 
-        // Gerar resposta baseada no contexto simplificado
+        // Geração de resposta usando OpenAI
         const resposta = await OpenAIService.gerarResposta(
             `Com base apenas na seguinte conversa:\n${contextoConversaSimples}\n\nResponda de forma direta e precisa à pergunta: "${pergunta}". Se a pergunta for sobre horário de reunião, indique o horário específico mencionado na conversa.`,
             pergunta
@@ -94,7 +99,17 @@ async function processarConversa(req, res) {
 }
 
 /**
- * Encontra o grupo de conversa mais relevante para a pergunta
+ * Encontra o grupo de conversa mais relevante para uma determinada pergunta
+ * 
+ * Usa análise de relevância com OpenAI para selecionar o grupo mais adequado
+ * 
+ * @async
+ * @function encontrarGrupoRelevante
+ * @param {Array} grupos - Lista de grupos de conversas para análise
+ * @param {string} pergunta - Pergunta para determinar relevância
+ * @returns {Promise<Array>} Grupo de conversa mais relevante
+ * 
+ * @throws {Error} Erro durante a análise de relevância
  */
 async function encontrarGrupoRelevante(grupos, pergunta) {
     // Se houver apenas um grupo, retorne-o
@@ -102,12 +117,10 @@ async function encontrarGrupoRelevante(grupos, pergunta) {
         return grupos[0];
     }
 
-    // Avalia a relevância de cada grupo para a pergunta
+    // Avalia a relevância de cada grupo
     const gruposComRelevancia = await Promise.all(grupos.map(async (grupo) => {
-        // Extrair texto de todas as mensagens do grupo
         const textoGrupo = grupo.map(msg => msg.message.body).join(' ');
         
-        // Usar a API da OpenAI para calcular relevância
         const prompt = `
         Pergunta: "${pergunta}"
         Trecho de conversa: "${textoGrupo}"
@@ -116,7 +129,6 @@ async function encontrarGrupoRelevante(grupos, pergunta) {
         
         const resposta = await OpenAIService.gerarResposta("", prompt);
         
-        // Extrair o valor numérico da resposta
         const relevancia = parseInt(resposta.match(/\d+/)[0], 10) || 0;
         
         return { grupo, relevancia };
@@ -130,64 +142,59 @@ async function encontrarGrupoRelevante(grupos, pergunta) {
 /**
  * Classifica uma mensagem e retorna resposta de acordo com a categoria
  * Parte 2 do desafio
+ * 
+ * Utiliza uma combinação de regras predefinidas e classificação por machine learning
+ * para categorizar e responder a diferentes tipos de mensagens
+ * 
+ * @async
+ * @function classificarMensagem
+ * @param {Object} req - Objeto de requisição Express
+ * @param {Object} res - Objeto de resposta Express
+ * @returns {Object} Resposta JSON com a categoria e resposta gerada
+ * 
+ * @throws {Error} Erro durante a classificação ou processamento da mensagem
  */
 const classificarMensagem = async (req, res) => {
     try {
         const { mensagem } = req.body;
 
+        // Validação de entrada
         if (!mensagem || typeof mensagem !== 'string') {
             return res.status(400).json({
                 erro: "Formato inválido. É necessário fornecer uma mensagem em texto."
             });
         }
 
-        // Garantir que o classificador está inicializado
+        // Verificação de inicialização do classificador
         if (!classifier) {
             return res.status(503).json({
                 erro: "Classificador não inicializado. Tente novamente em alguns instantes."
             });
         }
 
-        // Adicionar logs detalhados de debug
-        console.log('Mensagem recebida para classificação:', mensagem);
-
-        // Análise manual para locais antes de usar o classificador ML
+        // Análise de contexto da mensagem
         const contemLocal = /\b(restaurante|café|bar|academia|cinema|shopping|loja|parque|museu|teatro|hotel|boliche|região|cidade)\b/i.test(mensagem);
         const contemPedidoSugestao = /\b(onde|suger|indica|recomenda|conhece)\b/i.test(mensagem);
         const contemTrabalho = /\b(trabalho|emprego|projeto|reunião|cliente|apresentação|relatório|prazo|deadline)\b/i.test(mensagem);
         
-        // Logs de verificação das condições
-        console.log('Verificações de classificação:');
-        console.log('Contém local:', contemLocal);
-        console.log('Contém pedido de sugestão:', contemPedidoSugestao);
-        console.log('Contém trabalho:', contemTrabalho);
-        
+        // Determinação da categoria
         let categoria;
         
-        // Aplicar regras de prioridade
         if (contemTrabalho) {
             categoria = 'trabalho';
         } else if (contemLocal && contemPedidoSugestao) {
             categoria = 'sugestoes_locais';
         } else {
-            // Se não identificamos claramente com as regras, usamos o classificador ML
             const classificacao = classifier.classificar(mensagem);
             categoria = classificacao.categoria;
         }
 
-        // Log da categoria identificada
-        console.log('Categoria identificada:', categoria);
-
-        // Processar a resposta de acordo com a categoria
+        // Processamento da resposta baseado na categoria
         let resposta;
         switch (categoria) {
             case 'sugestoes_locais':
-                // Buscar informações no Google Maps
                 try {
-                    console.log('Buscando locais para:', mensagem);
                     const lugares = await GoogleMapsService.buscarLocais(mensagem);
-                    
-                    console.log('Resultado da busca de locais:', lugares);
                     
                     if (lugares && lugares.length > 0) {
                         const lugarDestaque = lugares[0];
@@ -202,7 +209,6 @@ const classificarMensagem = async (req, res) => {
                 break;
 
             case 'perguntas_gerais':
-                // Gerar resposta usando OpenAI
                 try {
                     resposta = await OpenAIService.gerarResposta(
                         "Respondendo de forma informativa e educacional: ",
@@ -218,7 +224,7 @@ const classificarMensagem = async (req, res) => {
                 resposta = "Mensagem classificada como trabalho. Nenhuma consulta externa necessária.";
                 break;
 
-            default: // 'outros'
+            default:
                 resposta = "Mensagem classificada como outros. Nenhuma consulta externa necessária.";
         }
 
@@ -232,6 +238,10 @@ const classificarMensagem = async (req, res) => {
     }
 };
 
+/**
+ * Módulo de controlador de classificação e processamento de mensagens
+ * @module MessageClassifierController
+ */
 module.exports = {
     processarConversa,
     classificarMensagem,

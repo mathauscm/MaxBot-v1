@@ -1,16 +1,53 @@
+/**
+ * @fileoverview Módulo que implementa um classificador de texto baseado em machine learning
+ * com abordagem híbrida utilizando TF-IDF, similaridade de cosseno e reconhecimento de padrões.
+ * @module ml-classifier
+ */
+
+/**
+ * Classe que implementa um classificador de texto utilizando TF-IDF e 
+ * reconhecimento de padrões específicos para cada categoria.
+ * @class
+ */
 class MLBasedClassifier {
+    /**
+     * Cria uma instância do classificador de texto baseado em ML.
+     * @constructor
+     */
     constructor() {
+        /**
+         * Conjunto de palavras únicas encontradas no corpus de treinamento.
+         * @type {Set<string>}
+         */
         this.vocabulario = new Set();
+        
+        /**
+         * Mapeamento de documentos de treinamento por categoria.
+         * @type {Object.<string, Array<Array<string>>>}
+         */
         this.documentosPorCategoria = {
             'trabalho': [],
             'sugestoes_locais': [],
             'perguntas_gerais': [],
             'outros': []
         };
+        
+        /**
+         * Valores de IDF (Inverse Document Frequency) para cada palavra no vocabulário.
+         * @type {Object.<string, number>}
+         */
         this.idf = {};
+        
+        /**
+         * Indicador se o classificador já foi treinado.
+         * @type {boolean}
+         */
         this.treinado = false;
         
-        // Padrões específicos para cada categoria
+        /**
+         * Expressões regulares para identificar padrões específicos de cada categoria.
+         * @type {Object.<string, Array<RegExp>>}
+         */
         this.padroesPorCategoria = {
             'trabalho': [
                 /\b(trabalho|emprego|projeto|reuni[ãa]o|cliente|apresenta[çc][ãa]o|relat[óo]rio)\b/i,
@@ -30,7 +67,10 @@ class MLBasedClassifier {
             ]
         };
 
-        // Pesos para diferentes características
+        /**
+         * Pesos atribuídos a diferentes características durante a classificação.
+         * @type {Object.<string, number>}
+         */
         this.pesos = {
             'padroesEspecificos': 2.5,
             'tfidf': 1.0,
@@ -39,6 +79,12 @@ class MLBasedClassifier {
         };
     }
 
+    /**
+     * Pré-processa um texto, removendo acentos, convertendo para minúsculas,
+     * removendo caracteres especiais e dividindo em palavras.
+     * @param {string} texto - O texto a ser pré-processado.
+     * @returns {Array<string>} Array contendo as palavras do texto pré-processado.
+     */
     preprocessarTexto(texto) {
         return texto.toLowerCase()
             .normalize('NFD')
@@ -49,6 +95,11 @@ class MLBasedClassifier {
             .split(' ');
     }
 
+    /**
+     * Calcula o Term Frequency (TF) para um conjunto de palavras.
+     * @param {Array<string>} palavras - Array de palavras para calcular o TF.
+     * @returns {Object.<string, number>} Mapeamento de palavra para seu valor TF.
+     */
     calcularTF(palavras) {
         const tf = {};
         palavras.forEach(palavra => {
@@ -61,6 +112,10 @@ class MLBasedClassifier {
         return tf;
     }
 
+    /**
+     * Calcula o Inverse Document Frequency (IDF) para todas as palavras no vocabulário.
+     * @returns {void}
+     */
     calcularIDF() {
         const N = Object.values(this.documentosPorCategoria)
             .reduce((sum, docs) => sum + docs.length, 0);
@@ -76,6 +131,11 @@ class MLBasedClassifier {
         });
     }
 
+    /**
+     * Calcula o TF-IDF para um conjunto de palavras.
+     * @param {Array<string>} palavras - Array de palavras para calcular o TF-IDF.
+     * @returns {Object.<string, number>} Mapeamento de palavra para seu valor TF-IDF.
+     */
     calcularTFIDF(palavras) {
         const tf = this.calcularTF(palavras);
         const tfidf = {};
@@ -87,6 +147,12 @@ class MLBasedClassifier {
         return tfidf;
     }
 
+    /**
+     * Verifica se um texto possui padrões específicos de uma determinada categoria.
+     * @param {string} texto - O texto original a ser verificado.
+     * @param {string} categoria - A categoria cujos padrões serão verificados.
+     * @returns {number} Pontuação baseada na quantidade de padrões encontrados.
+     */
     verificarPadroes(texto, categoria) {
         const padroes = this.padroesPorCategoria[categoria];
         if (!padroes) return 0;
@@ -96,6 +162,13 @@ class MLBasedClassifier {
         }, 0);
     }
 
+    /**
+     * Treina o classificador com exemplos rotulados.
+     * @param {Array<Object>} exemplos - Array de objetos contendo texto e categoria.
+     * @param {string} exemplos[].texto - O texto do exemplo de treinamento.
+     * @param {string} exemplos[].categoria - A categoria do exemplo de treinamento.
+     * @returns {void}
+     */
     treinar(exemplos) {
         this.vocabulario = new Set();
         Object.keys(this.documentosPorCategoria).forEach(categoria => {
@@ -111,6 +184,10 @@ class MLBasedClassifier {
         this.calcularIDF();
         this.treinado = true;
 
+        /**
+         * Centróides TF-IDF para cada categoria.
+         * @type {Object.<string, Object.<string, number>>}
+         */
         this.centroidesPorCategoria = {};
         Object.keys(this.documentosPorCategoria).forEach(categoria => {
             const documentos = this.documentosPorCategoria[categoria];
@@ -133,6 +210,12 @@ class MLBasedClassifier {
         });
     }
 
+    /**
+     * Calcula a similaridade de cosseno entre dois vetores.
+     * @param {Object.<string, number>} vetor1 - Primeiro vetor como mapeamento palavra-valor.
+     * @param {Object.<string, number>} vetor2 - Segundo vetor como mapeamento palavra-valor.
+     * @returns {number} Valor de similaridade de cosseno entre 0 e 1.
+     */
     similaridadeCosseno(vetor1, vetor2) {
         const palavras = new Set([...Object.keys(vetor1), ...Object.keys(vetor2)]);
         
@@ -155,6 +238,14 @@ class MLBasedClassifier {
         return produtoEscalar / (norma1 * norma2);
     }
 
+    /**
+     * Classifica um texto em uma das categorias disponíveis.
+     * @param {string} texto - O texto a ser classificado.
+     * @returns {Object} Resultado da classificação.
+     * @returns {string} resultado.categoria - A categoria prevista.
+     * @returns {number} resultado.confianca - O nível de confiança na classificação (%).
+     * @throws {Error} Se o classificador não foi treinado previamente.
+     */
     classificar(texto) {
         if (!this.treinado) {
             throw new Error('O classificador precisa ser treinado primeiro');

@@ -1,5 +1,19 @@
+/**
+ * @fileoverview Script principal para executar o classificador de texto treinado e testar com novos exemplos.
+ * @module text-classifier-test
+ * @requires ./ml-training.js
+ */
+
 const { MLClassifierTrainer } = require('./ml-training.js');
 
+/**
+ * Função principal que treina o classificador e executa uma bateria de testes com exemplos predefinidos.
+ * Imprime os resultados da classificação para cada exemplo de teste.
+ * 
+ * @async
+ * @function main
+ * @returns {Promise<void>}
+ */
 async function main() {
     // Cria uma instância do treinador
     const trainer = new MLClassifierTrainer();
@@ -9,8 +23,11 @@ async function main() {
         console.log('Iniciando treinamento...');
         const trainedClassifier = await trainer.trainWithFiles();
 
-        // Lista de textos para testar
-        // foram passados 10 frases sobre cada tema
+        /**
+         * Lista de textos para testar o classificador, agrupados por categoria esperada.
+         * Inclui 10 exemplos para cada uma das categorias: outros, perguntas_gerais, sugestoes_locais e trabalho.
+         * @type {Array<string>}
+         */
         const textosTeste = [
             // outros
             "Quais são suas dicas para manter a saúde mental em dias difíceis?",

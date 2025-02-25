@@ -1,17 +1,30 @@
 const fs = require('fs').promises;
 const path = require('path');
 
+/**
+ * Extrai e salva informações detalhadas de uma mensagem do WhatsApp
+ * 
+ * Esta função processa uma mensagem, extraindo metadados importantes
+ * e salvando em um arquivo de histórico geral
+ * 
+ * @async
+ * @function extractMessagePayload
+ * @param {Object} message - Objeto de mensagem do WhatsApp
+ * @returns {Promise<Object>} Payload detalhado da mensagem
+ * @throws {Error} Erro durante a extração ou salvamento do payload
+ */
 async function extractMessagePayload(message) {
     try {
-        // Lança um erro se a mensagem contiver mídia
+        // Verifica se a mensagem contém mídia
         if (message.hasMedia) {
             throw new Error('Mensagem contém mídia. Download não permitido.');
         }
 
+        // Obtém informações do chat e contato
         const chat = await message.getChat();
         const contact = await message.getContact();
         
-        // Formata a data
+        // Formata a data e hora da mensagem
         const messageDate = new Date(message.timestamp * 1000);
         
         const date = messageDate.toLocaleDateString('pt-BR', {
@@ -26,6 +39,7 @@ async function extractMessagePayload(message) {
             second: '2-digit'
         });
         
+        // Cria o payload detalhado da mensagem
         const messagePayload = {
             message: {
                 id: message.id._serialized,
@@ -48,23 +62,23 @@ async function extractMessagePayload(message) {
             }
         }
 
-        // Caminho do arquivo JSON
+        // Caminho do arquivo de histórico geral
         const filePath = path.join(__dirname, '../db/data/general_history.json');
         
-        // Certifica-se que o diretório existe
+        // Cria o diretório se não existir
         const dirPath = path.dirname(filePath);
         await fs.mkdir(dirPath, { recursive: true });
 
-        // Inicializa o array de dados
+        // Inicializa array de dados existentes
         let existingData = [];
 
         try {
-            // Tenta ler o arquivo existente
+            // Verifica e lê o arquivo existente
             const fileExists = await fs.access(filePath).then(() => true).catch(() => false);
             
             if (fileExists) {
                 const fileContent = await fs.readFile(filePath, 'utf8');
-                // Verifica se o conteúdo não está vazio
+                // Processa o conteúdo do arquivo
                 if (fileContent.trim()) {
                     try {
                         existingData = JSON.parse(fileContent);
@@ -81,10 +95,10 @@ async function extractMessagePayload(message) {
             console.warn('Erro ao ler arquivo existente, iniciando novo array');
         }
 
-        // Adiciona o novo payload
+        // Adiciona o novo payload ao array existente
         existingData.push(messagePayload);
 
-        // Salva o arquivo
+        // Salva o arquivo atualizado
         try {
             await fs.writeFile(filePath, JSON.stringify(existingData, null, 2), 'utf8');
             console.log('Payload salvo com sucesso!');
@@ -100,4 +114,8 @@ async function extractMessagePayload(message) {
     }
 }
 
+/**
+ * Módulo de extração de payload de mensagem
+ * @module MessagePayloadExtraction
+ */
 module.exports = extractMessagePayload;

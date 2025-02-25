@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Servidor Express para a interface de chat do MaxBot.
+ * Fornece uma interface web simples para interação com o bot e processa as mensagens dos usuários.
+ * @module chat-server
+ * @requires express
+ * @requires path
+ * @requires dotenv
+ * @requires ./src/services/mentionHandlerService
+ */
+
 const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
@@ -6,8 +16,16 @@ const mentionHandler = require('./src/services/mentionHandlerService');
 // Carrega variáveis de ambiente
 dotenv.config();
 
-// Inicializa aplicativo Express
+/**
+ * Aplicação Express para o servidor de chat.
+ * @type {import('express').Application}
+ */
 const app = express();
+
+/**
+ * Porta na qual o servidor de chat irá escutar, definida via variável de ambiente ou 5000 como padrão.
+ * @type {number}
+ */
 const port = process.env.CHAT_PORT || 5000;
 
 // Configurar body parser para JSON
@@ -17,7 +35,15 @@ app.use(express.urlencoded({ extended: true }));
 // Servir arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota principal do chat com template simples direto
+/**
+ * Rota principal que serve a interface de chat em HTML/CSS/JavaScript.
+ * @name GET /
+ * @function
+ * @memberof module:chat-server
+ * @param {import('express').Request} req - Objeto de requisição Express.
+ * @param {import('express').Response} res - Objeto de resposta Express.
+ * @returns {void} Envia a página HTML ao cliente.
+ */
 app.get('/', (req, res) => {
     res.send(`
     <!DOCTYPE html>
@@ -376,7 +402,16 @@ app.get('/', (req, res) => {
     `);
 });
 
-// Rota para processar mensagens
+/**
+ * Rota para processar mensagens enviadas pelo cliente.
+ * Recebe a mensagem do usuário, adiciona o prefixo @MaxBot e processa usando o serviço de menções.
+ * @name POST /chat
+ * @function
+ * @memberof module:chat-server
+ * @param {import('express').Request} req - Objeto de requisição Express.
+ * @param {import('express').Response} res - Objeto de resposta Express.
+ * @returns {Promise<void>} Retorna resposta em formato JSON.
+ */
 app.post('/chat', async (req, res) => {
     try {
         const { message, conversationId } = req.body;
@@ -415,7 +450,13 @@ app.post('/chat', async (req, res) => {
     }
 });
 
-// Função para formatar a resposta com melhor legibilidade
+/**
+ * Formata a resposta do bot para melhorar a legibilidade.
+ * Aplica formatação especial para listas de restaurantes ou mantém o texto original.
+ * @function formatResponse
+ * @param {string} text - Texto da resposta a ser formatado.
+ * @returns {string} Texto formatado com quebras de linha adequadas.
+ */
 function formatResponse(text) {
     // Verifica se é uma lista de restaurantes
     if (text.includes('Encontrei estas opções para você')) {
@@ -425,7 +466,13 @@ function formatResponse(text) {
     return text;
 }
 
-// Função específica para formatar listas de restaurantes
+/**
+ * Formata especificamente respostas que contêm listas de restaurantes.
+ * Adiciona quebras de linha para melhorar a legibilidade da lista.
+ * @function formatRestaurantResponse
+ * @param {string} text - Texto contendo lista de restaurantes.
+ * @returns {string} Lista de restaurantes formatada com quebras de linha.
+ */
 function formatRestaurantResponse(text) {
     // Divide a introdução do restante
     const parts = text.split(/(?=\d+\.)/);
@@ -449,7 +496,12 @@ function formatRestaurantResponse(text) {
     return intro + "\n\n" + formattedItems.join("\n\n");
 }
 
-// Inicializa o serviço de menções
+/**
+ * Inicializa o serviço de menções ao iniciar o servidor.
+ * Função auto-executável que configura o handler de menções.
+ * @function
+ * @async
+ */
 (async () => {
     try {
         await mentionHandler.initialize();
@@ -459,7 +511,10 @@ function formatRestaurantResponse(text) {
     }
 })();
 
-// Inicia o servidor
+/**
+ * Inicia o servidor HTTP na porta configurada.
+ * @listens {port}
+ */
 app.listen(port, () => {
     console.log(`Chat web rodando em http://localhost:${port}`);
 });

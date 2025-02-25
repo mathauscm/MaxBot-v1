@@ -1,18 +1,43 @@
 const fs = require('fs');
 const path = require('path');
-let qrCodeUrl = null
 
+/** Armazena a URL do QR Code para conexão */
+let qrCodeUrl = null;
+
+/**
+ * Define a URL do QR Code para conexão do WhatsApp
+ * 
+ * @function setQrCodeUrl
+ * @param {string} url - URL do QR Code gerado
+ */
 function setQrCodeUrl(url) {
-    qrCodeUrl = url
+    qrCodeUrl = url;
 }
 
+/**
+ * Recupera a URL do QR Code armazenada
+ * 
+ * @function getQrCodeUrl
+ * @returns {string|null} URL do QR Code ou null se não estiver definida
+ */
 function getQrCodeUrl() {
-    return qrCodeUrl
+    return qrCodeUrl;
 }
 
+/**
+ * Recupera o histórico de mensagens de um usuário específico
+ * 
+ * Busca e formata mensagens de um arquivo JSON de histórico geral,
+ * com múltiplas estratégias de busca para encontrar mensagens do usuário
+ * 
+ * @async
+ * @function getUserHistory
+ * @param {string} nomeRemetente - Nome do remetente para busca no histórico
+ * @returns {Promise<string>} Histórico formatado de mensagens do usuário
+ */
 async function getUserHistory(nomeRemetente) {
     try {
-        // Lê o arquivo JSON do histórico - Caminho corrigido
+        // Lê o arquivo JSON do histórico
         const filePath = path.join(__dirname, '..', 'db', 'data', 'general_history.json');
         
         // Verifica se o arquivo existe
@@ -27,20 +52,18 @@ async function getUserHistory(nomeRemetente) {
         const messages = JSON.parse(rawData);
         console.log("Total de mensagens no arquivo:", messages.length);
 
-        // Filtrar mensagens relevantes
+        // Filtra mensagens do usuário
         const userMessages = messages.filter(msg => {
-            // Verifica se é uma mensagem válida
+            // Validações para encontrar mensagens do usuário
             if (!msg || !msg.message || !msg.message.body) return false;
             
-            // Verifica se tem sender e se é um objeto
             if (!msg.sender) return false;
             
-            // Se o sender for um objeto com propriedade name
+            // Verifica diferentes formatos de sender
             if (typeof msg.sender === 'object' && msg.sender.name) {
                 return msg.sender.name.toLowerCase().includes(nomeRemetente.toLowerCase());
             }
             
-            // Se o sender for uma string
             if (typeof msg.sender === 'string') {
                 return msg.sender.toLowerCase().includes(nomeRemetente.toLowerCase());
             }
@@ -50,10 +73,9 @@ async function getUserHistory(nomeRemetente) {
 
         console.log("Mensagens encontradas para", nomeRemetente, ":", userMessages.length);
 
-        // Se não encontrou, tenta de outra forma (pela propriedade message)
+        // Estratégias alternativas de busca se nenhuma mensagem for encontrada
         if (userMessages.length === 0) {
             const alternativeMessages = messages.filter(msg => {
-                // Se o formato incluir diretamente a mensagem com remetente
                 if (msg && msg.message && msg.message.sender) {
                     return String(msg.message.sender).toLowerCase().includes(nomeRemetente.toLowerCase());
                 }
@@ -65,7 +87,7 @@ async function getUserHistory(nomeRemetente) {
                 return formatMessages(alternativeMessages, nomeRemetente);
             }
             
-            // Se ainda não encontrou, talvez o remetente esteja na raiz
+            // Último recurso: busca em formato de mensagem raiz
             const rootMessages = messages.filter(msg => {
                 return msg && msg.body && nomeRemetente;
             });
@@ -75,7 +97,7 @@ async function getUserHistory(nomeRemetente) {
                 return formatMessages(rootMessages, nomeRemetente);
             }
             
-            // Se ainda não encontrou, retorna todas as mensagens
+            // Se ainda não encontrou, retorna as últimas 10 mensagens
             console.log("Retornando todas as mensagens como último recurso");
             return formatMessages(messages.slice(-10), nomeRemetente);
         }
@@ -87,14 +109,21 @@ async function getUserHistory(nomeRemetente) {
     }
 }
 
-// Função para formatar mensagens
+/**
+ * Formata mensagens em um formato legível
+ * 
+ * @function formatMessages
+ * @param {Array} messages - Lista de mensagens para formatar
+ * @param {string} nomeRemetente - Nome do remetente para cabeçalho
+ * @returns {string} Mensagens formatadas em texto
+ */
 function formatMessages(messages, nomeRemetente) {
     if (!messages || messages.length === 0) {
         return `Nenhuma mensagem encontrada para ${nomeRemetente}`;
     }
     
-    // Limita o número de mensagens para evitar mensagens muito longas
-    const limitedMessages = messages.slice(-10); // Mostra apenas as últimas 10 mensagens
+    // Limita o número de mensagens
+    const limitedMessages = messages.slice(-10);
     
     // Formata as mensagens encontradas
     const messageHistory = limitedMessages
@@ -102,14 +131,14 @@ function formatMessages(messages, nomeRemetente) {
             let body = '';
             let timestamp = new Date();
             
-            // Tenta extrair o corpo da mensagem
+            // Extração do corpo da mensagem
             if (msg.message && msg.message.body) {
                 body = msg.message.body;
             } else if (msg.body) {
                 body = msg.body;
             }
             
-            // Tenta extrair o timestamp
+            // Extração do timestamp
             if (msg.message && msg.message.timestamp) {
                 timestamp = new Date(msg.message.timestamp * 1000);
             } else if (msg.timestamp) {
@@ -131,6 +160,16 @@ function formatMessages(messages, nomeRemetente) {
     return `📋 *Histórico de mensagens de ${nomeRemetente}*\n\n${messageHistory}`;
 }
 
+/**
+ * Manipula mensagens recebidas no grupo específico
+ * 
+ * Processa comandos do bot e registra informações da mensagem
+ * 
+ * @async
+ * @function handleMessage
+ * @param {Object} message - Objeto de mensagem do WhatsApp
+ * @throws {Error} Erro durante o processamento da mensagem
+ */
 async function handleMessage(message) {
     try {
         const chat = await message.getChat()
@@ -148,13 +187,9 @@ async function handleMessage(message) {
 
         // Log detalhado para debug
         console.log('Mensagem recebida:')
-        // console.log(`Chat ID: ${chat.id._serialized}`)
-        // console.log(`Nome do Grupo: ${chat.name}`)
         console.log(`Remetente: ${contact.name || contact.pushname || contact.number}`)
-        // console.log(`Número: ${contact.number}`)
         console.log(`Mensagem: ${message.body}`)
         console.log(`Data e Hora de Envio: ${dataFormatada}`)
-        // console.log(`Timestamp Unix: ${message.timestamp}`)
 
        // Verificação do grupo 
         if (chat.name === 'Group-MaxBot-v1') {
@@ -214,7 +249,6 @@ async function handleMessage(message) {
                     console.log("Buscando histórico para:", nomeRemetente);
                     const historico = await getUserHistory(nomeRemetente);
                     console.log("Histórico obtido, tamanho:", historico.length);
-                    console.log("Conteúdo do histórico:", historico.substring(0, 200) + "...");
                     
                     // Divide a mensagem em partes menores se for muito grande
                     const maxLength = 1000; // Tamanho máximo de cada mensagem
@@ -246,7 +280,15 @@ async function handleMessage(message) {
     }
 }
 
-// Eventos de entrada e saída no grupo
+/**
+ * Manipula eventos de entrada no grupo
+ * 
+ * Envia uma mensagem de boas-vindas quando um novo membro entra
+ * 
+ * @async
+ * @function handleGroupJoin
+ * @param {Object} notification - Objeto de notificação de entrada no grupo
+ */
 async function handleGroupJoin(notification) {
     const chat = await notification.getChat()
     const contact = await notification.getContact()
@@ -259,6 +301,15 @@ async function handleGroupJoin(notification) {
     }
 }
 
+/**
+ * Manipula eventos de saída do grupo
+ * 
+ * Envia uma mensagem de despedida quando um membro sai
+ * 
+ * @async
+ * @function handleGroupLeave
+ * @param {Object} notification - Objeto de notificação de saída do grupo
+ */
 async function handleGroupLeave(notification) {
     const chat = await notification.getChat()
     const contact = await notification.getContact()
@@ -271,10 +322,14 @@ async function handleGroupLeave(notification) {
     }
 }
 
+/**
+ * Módulo de controlador do bot WhatsApp
+ * @module BotController
+ */
 module.exports = {
     setQrCodeUrl,
     getQrCodeUrl,
     handleMessage,
     handleGroupJoin,
     handleGroupLeave
-}
+};
