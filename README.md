@@ -11,9 +11,6 @@ MaxBot é um chatbot avançado para WhatsApp que utiliza Machine Learning e Proc
 ## ChatBot WhatsApp
 ![MaxBot Demo](./src/assets/screenshots/3.png)
 
-## ChatBot AI - navegador web
-![MaxBot Demo](./src/assets/screenshots/4.png)
-
 
 ## ✨ Características Principais
 
@@ -32,7 +29,6 @@ MaxBot é um chatbot avançado para WhatsApp que utiliza Machine Learning e Proc
   - Sistema de menções (@MaxBot ou @558585707591)
 
 - **Comandos do Bot**
-  - !ping - Teste de resposta
   - !help - Lista de comandos
   - !hora - Mostra hora atual
   - !dados - Informações do grupo
@@ -179,6 +175,9 @@ Bot: [Resposta detalhada da OpenAI sobre machine learning]
 | Análise de dados em grupo | "@MaxBot faça um resumo da nossa conversa sobre o projeto X" | Resumo contextual baseado no histórico |
 | Planejamento de evento | "@MaxBot ajude a organizar um workshop para 15 pessoas" | Sugestões estruturadas para planejamento |
 | Pesquisa educacional | "@MaxBot explique o ciclo da água para crianças" | Explicação adaptada ao público-alvo |
+
+## ChatBot AI - navegador web
+![MaxBot Demo](./src/assets/screenshots/4.png)
 
 # API 
 
