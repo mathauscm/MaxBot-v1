@@ -354,7 +354,6 @@ npm test
 #### Cobertura de Testes
 - **Classificador ML**: Testes para as quatro categorias principais
 - **API REST**: Testes para os endpoints principais
-- **Integrações**: Testes para integração com serviços externos
 
 Para adicionar novos testes, siga o padrão existente em `src/test/`.
 
