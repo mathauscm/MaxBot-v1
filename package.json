@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "mocha src/test/classification.test.js"
+    "test": "mocha src/test/*.test.js"
   },
   "engines": {
     "node": "18.20.5"

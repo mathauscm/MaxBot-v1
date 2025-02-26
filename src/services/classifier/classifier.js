@@ -1,6 +1,8 @@
 /**
  * @fileoverview Módulo que implementa um classificador de texto baseado em machine learning
  * com abordagem híbrida utilizando TF-IDF, similaridade de cosseno e reconhecimento de padrões.
+ * TF-IDF (Term Frequency-Inverse Document Frequency)
+ * é uma técnica estatística usada para avaliar a importância de uma palavra em um documento
  * @module ml-classifier
  */
 
