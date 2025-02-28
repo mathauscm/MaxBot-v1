@@ -1,15 +1,15 @@
 # MyBot 🤖 
 # Chatbot Inteligente para WhatsApp com ML e NLP
 
-[![Versão](https://img.shields.io/badge/versão-1.0.0-blue.svg)](https://github.com/mathauscm/MaxBot-v1)
-[![Status](https://img.shields.io/badge/status-em%20desenvolvimento-green.svg)](https://github.com/mathauscm/MaxBot-v1)
+[![Versão](https://img.shields.io/badge/versão-1.0.0-blue.svg)](https://github.com/mathauscm/MyBot)
+[![Status](https://img.shields.io/badge/status-em%20desenvolvimento-green.svg)](https://github.com/mathauscm/MyBot)
 [![Node.js](https://img.shields.io/badge/Node.js-v18.20.5-brightgreen.svg)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/licença-ISC-orange.svg)](LICENSE)
 
-MaxBot é um chatbot avançado para WhatsApp que utiliza Machine Learning e Processamento de Linguagem Natural para fornecer respostas contextuais inteligentes. Integrado com OpenAI e Google Maps, o bot oferece desde respostas a perguntas gerais até recomendações precisas de locais.
+MyBot é um chatbot avançado para WhatsApp que utiliza Machine Learning e Processamento de Linguagem Natural para fornecer respostas contextuais inteligentes. Integrado com OpenAI e Google Maps, o bot oferece desde respostas a perguntas gerais até recomendações precisas de locais.
 
 ## ChatBot WhatsApp
-![MaxBot Demo](./src/assets/screenshots/3.png)
+![MyBot Demo](./src/assets/screenshots/3.png)
 
 
 ## ✨ Características Principais
@@ -26,7 +26,7 @@ MaxBot é um chatbot avançado para WhatsApp que utiliza Machine Learning e Proc
 - **Integrações Inteligentes**
   - OpenAI GPT para respostas contextuais
   - Google Maps API para recomendações de locais
-  - Sistema de menções (@MaxBot ou @+"numero cliente")
+  - Sistema de menções (@MyBot ou @+"numero cliente")
   - DDI + DDD + Numero (exemplo: 558585707599, no Brasil sem adicionar o "9" inicial)
 
 - **Comandos do Bot**
@@ -67,8 +67,8 @@ MaxBot é um chatbot avançado para WhatsApp que utiliza Machine Learning e Proc
 
 1. Clone o repositório: 📥
 ```bash
-git clone https://github.com/mathauscm/MaxBot-v1.git
-cd maxbot
+git clone https://github.com/mathauscm/MyBot.git
+cd mybot
 ```
 
 2. Instale as dependências: 💻
@@ -139,7 +139,7 @@ http://localhost:3000
 
 ## 📱 Interface Web
 
-O MaxBot inclui uma interface web simples para interações diretas sem necessidade do WhatsApp:
+O MyBot inclui uma interface web simples para interações diretas sem necessidade do WhatsApp:
 
 ## 📁 Estrutura do Projeto
 
@@ -189,21 +189,21 @@ src/
 - Histórico completo é mantido para análise
 
 ### Menções ao Bot
-- Use @MaxBot ou @numerobot seguido de sua pergunta
+- Use @MyBot ou @numerobot seguido de sua pergunta
 - Para locais: "Onde tem uma pizzaria boa?"
 - Para perguntas gerais: "Como funciona fotossíntese?"
 - Para trabalho: "Como organizar uma reunião eficiente?"
 
 ### Exemplos de Uso
 ```
-Usuário: "@MaxBot onde tem uma boa pizzaria?"
+Usuário: "@MyBot onde tem uma boa pizzaria?"
 Bot: "Encontrei estas opções para você:
 1. Pizzaria Bella Napoli
    Endereço: Rua Example, 123
    Avaliação: 4.5 ⭐ (234 avaliações)
    Status: Aberto agora"
 
-Usuário: "@MaxBot explique o que é machine learning"
+Usuário: "@MyBot explique o que é machine learning"
 Bot: [Resposta detalhada da OpenAI sobre machine learning]
 ```
 
@@ -211,10 +211,10 @@ Bot: [Resposta detalhada da OpenAI sobre machine learning]
 
 | Cenário | Exemplo de Comando | Resultado |
 |---------|-------------------|-----------|
-| Recomendação de restaurante com filtro | "@MaxBot restaurante italiano com ambiente familiar" | Lista filtrada por tipo de comida e ambiente |
-| Análise de dados em grupo | "@MaxBot faça um resumo da nossa conversa sobre o projeto X" | Resumo contextual baseado no histórico |
-| Planejamento de evento | "@MaxBot ajude a organizar um workshop para 15 pessoas" | Sugestões estruturadas para planejamento |
-| Pesquisa educacional | "@MaxBot explique o ciclo da água para crianças" | Explicação adaptada ao público-alvo |
+| Recomendação de restaurante com filtro | "@MyBot restaurante italiano com ambiente familiar" | Lista filtrada por tipo de comida e ambiente |
+| Análise de dados em grupo | "@MyBot faça um resumo da nossa conversa sobre o projeto X" | Resumo contextual baseado no histórico |
+| Planejamento de evento | "@MyBot ajude a organizar um workshop para 15 pessoas" | Sugestões estruturadas para planejamento |
+| Pesquisa educacional | "@MyBot explique o ciclo da água para crianças" | Explicação adaptada ao público-alvo |
 
 ## Hierarquia de Prioridades
 
