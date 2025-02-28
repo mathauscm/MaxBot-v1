@@ -31,7 +31,7 @@ class MentionHandlerService {
          * @type {string[]}
          * @private
          */
-        this.BOT_NUMBERS = ['@MaxBot', process.env.NUMBER_BOT];
+        this.BOT_NUMBERS = ['@MyBot', process.env.NUMBER_BOT];
     }
 
     /**

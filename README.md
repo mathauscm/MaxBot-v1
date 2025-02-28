@@ -1,4 +1,4 @@
-# MaxBot 🤖 
+# MyBot 🤖 
 # Chatbot Inteligente para WhatsApp com ML e NLP
 
 [![Versão](https://img.shields.io/badge/versão-1.0.0-blue.svg)](https://github.com/mathauscm/MaxBot-v1)

@@ -192,7 +192,7 @@ async function handleMessage(message) {
         console.log(`Data e Hora de Envio: ${dataFormatada}`)
 
        // Verificação do grupo 
-        if (chat.name === 'Group-MaxBot-v1') {
+        if (chat.name === 'Group-MyBot-v1') {
             // Variáveis para nome do remetente
             const nomeRemetente = contact.name || contact.pushname || 'Usuário'
             
@@ -293,7 +293,7 @@ async function handleGroupJoin(notification) {
     const chat = await notification.getChat()
     const contact = await notification.getContact()
 
-    if (chat.name === 'Group-MaxBot-v1') {
+    if (chat.name === 'Group-MyBot-v1') {
         const nomeRemetente = contact.name || contact.pushname || 'Novo Membro'
         console.log('Alguém entrou no grupo:', nomeRemetente)
 
@@ -314,7 +314,7 @@ async function handleGroupLeave(notification) {
     const chat = await notification.getChat()
     const contact = await notification.getContact()
 
-    if (chat.name === 'Group-MaxBot-v1') {
+    if (chat.name === 'Group-MyBot-v1') {
         const nomeRemetente = contact.name || contact.pushname || 'Membro'
         console.log('Alguém saiu do grupo:', nomeRemetente)
 
