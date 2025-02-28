@@ -26,7 +26,7 @@ MaxBot é um chatbot avançado para WhatsApp que utiliza Machine Learning e Proc
 - **Integrações Inteligentes**
   - OpenAI GPT para respostas contextuais
   - Google Maps API para recomendações de locais
-  - Sistema de menções (@MaxBot ou @558585707591)
+  - Sistema de menções (@MaxBot ou @+"numero cliente")
 
 - **Comandos do Bot**
   - !help - Lista de comandos
@@ -140,31 +140,27 @@ http://localhost:3000
 
 O MaxBot inclui uma interface web simples para interações diretas sem necessidade do WhatsApp:
 
-![Interface Web](./src/assets/screenshots/4.png)
-
-Acesse a interface web em: `http://localhost:5000`
-
 ## 📁 Estrutura do Projeto
 
 ```
 src/
 ├── config/
 │   ├── enviroment.js         # Configurações de ambiente
-│   ├── whatsappConfig.js     # Configuração do cliente WhatsApp
-│   └── swaggerConfig.js      # Configuração do swagger
+│   └── whatsappConfig.js     # Configuração do cliente WhatsApp
+│   
 ├── controllers/
-│   ├── apiController.js         # Controlador API Rest
 │   ├── botController.js         # Controlador principal do bot
 │   ├── classifierData.js        # Manipulação de dados classificados
 │   └── extractMessagePayload.js # Extração de dados das mensagens
+│   
 ├── db/
 │   ├── data/
 │   │   └── general_history.json # Histórico geral de mensagens
 │   └── classificationMensages/
 │       └── classificationByTime.json # Mensagens classificadas
 ├── routes/
-│   ├── apiRoutes.js # Definição de rotas API
 │   └── webRoutes.js # Definição rotas app WhatsApp
+│   
 ├── services/
 │   ├── classifier/
 │   │   ├── classifier.js     # Classificador ML
@@ -176,8 +172,8 @@ src/
 │   │   └── openAiService.js     # Integração OpenAI
 │   └── mentionHandlerService.js # Processador de menções
 ├──test/
-│  ├── api.test.js            # Teste API REST
 │  └── classification.test.js # Teste de classificação NLP Machine Learning
+│  
 └── utils/
     ├── chatUtils.js          # Utilitários de chat
     ├── sessionUtils.js       # Gestão de sessão
@@ -192,7 +188,7 @@ src/
 - Histórico completo é mantido para análise
 
 ### Menções ao Bot
-- Use @MaxBot ou @558585707591 seguido de sua pergunta
+- Use @MaxBot ou @numerobot seguido de sua pergunta
 - Para locais: "Onde tem uma pizzaria boa?"
 - Para perguntas gerais: "Como funciona fotossíntese?"
 - Para trabalho: "Como organizar uma reunião eficiente?"
@@ -219,110 +215,6 @@ Bot: [Resposta detalhada da OpenAI sobre machine learning]
 | Planejamento de evento | "@MaxBot ajude a organizar um workshop para 15 pessoas" | Sugestões estruturadas para planejamento |
 | Pesquisa educacional | "@MaxBot explique o ciclo da água para crianças" | Explicação adaptada ao público-alvo |
 
-## ChatBot AI - navegador web
-![MaxBot Demo](./src/assets/screenshots/4.png)
-
-# API 
-
-Além do bot WhatsApp, o MaxBot também fornece uma API REST para processamento de conversas e classificação de mensagens. A documentação interativa completa está disponível através do Swagger UI.
-
-## Endpoints
-
-### Processar Conversa
-
-Processa uma conversa de grupo e responde a uma pergunta com base no contexto mais relevante.
-
-```http
-POST /api/processar_conversa
-```
-
-**Corpo da requisição:**
-```json
-{
-  "conversa": [
-    {"usuario": "João", "mensagem": "Oi, pessoal! Vamos marcar a reunião?", "hora_envio": "2025-02-18T09:00:00"},
-    {"usuario": "Maria", "mensagem": "Bom dia! Tudo bem. Que tal às 14h?", "hora_envio": "2025-02-18T09:01:00"},
-    {"usuario": "Carlos", "mensagem": "14h está ótimo para mim.", "hora_envio": "2025-02-18T09:02:30"},
-    {"usuario": "João", "mensagem": "Perfeito! Então, reunião marcada para às 14h.", "hora_envio": "2025-02-18T09:04:00"}
-  ],
-  "pergunta": "Que horas será a reunião?"
-}
-```
-
-**Resposta:**
-```json
-{
-  "resposta": "A reunião será às 14h, conforme sugerido por Maria."
-}
-```
-
-### Classificar Mensagem
-
-Classifica uma mensagem em categorias (trabalho, sugestões de locais, perguntas gerais, outros) e fornece resposta adequada.
-
-```http
-POST /api/classificar_mensagem
-```
-
-**Corpo da requisição:**
-```json
-{
-  "mensagem": "Onde fica um bom restaurante para almoçar?"
-}
-```
-
-**Resposta para sugestões de locais:**
-```json
-{
-  "categoria": "sugestoes_locais",
-  "resposta": "Sugestão: Restaurante Gourmet - Nota 4.8, localizado em Av. Principal, 123."
-}
-```
-
-**Resposta para trabalho:**
-```json
-{
-  "categoria": "trabalho",
-  "resposta": "Mensagem classificada como trabalho. Nenhuma consulta externa necessária."
-}
-```
-
-**Resposta para perguntas gerais:**
-```json
-{
-  "categoria": "perguntas_gerais",
-  "resposta": "A inteligência artificial é um campo da ciência da computação focado em criar sistemas que simulam a capacidade humana de aprendizado e raciocínio."
-}
-```
-
-### Documentação Swagger
-
-A API inclui uma documentação interativa Swagger que permite testar os endpoints diretamente pelo navegador:
-
-```
-http://localhost:3001/api-docs
-```
-
-![Swagger UI](./src/assets/screenshots/5.png)
-
-A documentação Swagger oferece:
-- Descrição detalhada de todos os endpoints
-- Interface interativa para testar as chamadas
-- Exemplos de requisições e respostas
-- Modelos de schema para cada operação
-
-### Exemplos via Linha de Comando
-
-```bash
-# Exemplo com curl
-curl -X POST http://localhost:3001/api/classificar_mensagem \
-  -H "Content-Type: application/json" \
-  -d '{"mensagem": "Onde fica um bom restaurante para almoçar?"}'
-
-# Exemplo PowerShell
-Invoke-RestMethod -Uri "http://localhost:3001/api/classificar_mensagem" -Method Post -ContentType "application/json" -Body '{"mensagem": "Meu carro está fazendo um barulho estranho."}'
-```
-
 ## Hierarquia de Prioridades
 
 As mensagens são classificadas seguindo a hierarquia:
@@ -342,24 +234,23 @@ Se uma mensagem contiver elementos de múltiplas categorias, a de maior priorida
 | `npm start` | Inicia o bot principal |
 | `npm run dev` | Inicia em modo desenvolvimento com hot-reload |
 | `npm test` | Executa os testes automatizados |
-| `node api-server.js` | Inicia apenas a API REST |
-| `node chat-server.js` | Inicia apenas a interface web |
 
 ### Testes
-O projeto inclui testes unitários para o API e classificador ML usando Chai e Mocha:
+O projeto inclui testes unitários para o classificador Machine Learning usando Chai e Mocha:
 ```bash
 npm test
 ```
 
 #### Cobertura de Testes
 - **Classificador ML**: Testes para as quatro categorias principais
-- **API REST**: Testes para os endpoints principais
+
 
 Para adicionar novos testes, siga o padrão existente em `src/test/`.
 
 ## 📈 Machine Learning
 
 - Classificador baseado em TF-IDF
+- Silimilaridade de cosseno entre vetores
 - Análise de padrões específicos por categoria
 - Sistema de pontuação ponderada
 - Treinamento com datasets customizados
@@ -372,14 +263,13 @@ Para adicionar novos testes, siga o padrão existente em `src/test/`.
 │   Cliente   │◄───────────────────┤  ┌───────────────┐  │
 │  WhatsApp   │                    │  │  WhatsApp Web │  │
 └─────┬───────┘                    │  └───────────────┘  │
-      │                            │  ┌───────────────┐  │
-      │                            │  │  Web Chat UI  │  │
-      │                            │  └───────────────┘  │
-      │                            │  ┌───────────────┐  │
-      ▼                            │  │   REST API    │  │
-┌─────────────────────────────────┐│  └───────────────┘  │
-│           MaxBot Core           ││                     │
-│                                 │└─────────────────────┘
+      │                            │                     │
+      │                            └─────────────────────┘
+      │                            
+      │                            
+      ▼                            
+┌─────────────────────────────────┐
+│                                 │
 │  ┌──────────────────────────┐   │
 │  │  Message Handler Service │   │         ┌───────────────┐
 │  │  ┌─────────────────────┐ │   │         │  Persistence  │
@@ -469,7 +359,6 @@ Este projeto está sob a licença ISC - veja o arquivo [LICENSE](LICENSE) para d
 
 ## 🎁 Agradecimentos
 
-* Maximiza Tecnologias - [Maximiza Tecnologias](https://www.maximizatecnologias.com/)
 * Comunidade Node.js   - [Comunidade Node.js](https://nodejs.org/)
 * WhatsApp-web.js      - [WhatsApp-web.js](https://github.com/pedroslopez/whatsapp-web.js)
 * Puppeteer            - [Puppeteer](https://github.com/puppeteer/puppeteer)
