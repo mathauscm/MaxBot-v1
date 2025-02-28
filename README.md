@@ -81,7 +81,7 @@ npm install
 OPENAI_API_KEY=sua_chave_openai
 GOOGLE_MAPS_API_KEY=sua_chave_google_maps
 PORT=4000
-CHAT_PORT=5000
+NUMBER_BOT=seu_numero
 ```
 
 ## ⚠️ Estrutura de Diretórios Necessária
