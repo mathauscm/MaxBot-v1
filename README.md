@@ -27,6 +27,7 @@ MaxBot é um chatbot avançado para WhatsApp que utiliza Machine Learning e Proc
   - OpenAI GPT para respostas contextuais
   - Google Maps API para recomendações de locais
   - Sistema de menções (@MaxBot ou @+"numero cliente")
+  - DDI + DDD + Numero (exemplo: 558585707599, no Brasil sem adicionar o "9" inicial)
 
 - **Comandos do Bot**
   - !help - Lista de comandos

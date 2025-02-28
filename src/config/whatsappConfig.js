@@ -5,7 +5,7 @@ const { getChromePath } = require('../utils/systemUtils')
 const botController = require('../controllers/botController')
 const extractMessagePayload = require('../controllers/extractMessagePayload')
 const classifierData = require('../controllers/classifierData')
-const mentionHandler = require('../services/mentionHandlerService')
+const mentionHandler = require('./../services/metionHandlerService')
 
 // Limpa a sessão antes de iniciar
 limparSessaoAntiga();

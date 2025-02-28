@@ -30,7 +30,7 @@ class OpenAIService {
         try {
             // Cria uma solicitação de completude de chat
             const completion = await openai.chat.completions.create({
-                model: "gpt-3.5-turbo", // Modelo de linguagem utilizado
+                model: "gpt-4-turbo", // Modelo de linguagem utilizado
                 messages: [
                     { 
                         role: "system", 
@@ -73,7 +73,7 @@ class OpenAIService {
         try {
             // Cria uma solicitação de completude de chat para análise de sentimento
             const completion = await openai.chat.completions.create({
-                model: "gpt-3.5-turbo", // Modelo de linguagem utilizado
+                model: "gpt-4-turbo", // Modelo de linguagem utilizado
                 messages: [
                     {
                         role: "system",
